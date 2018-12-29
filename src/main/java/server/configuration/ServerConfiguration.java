@@ -1,52 +1,30 @@
 package server.configuration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.logging.Logger;
+import static common.VariableEvaluator.isEmpty;
 
-import common.VariableEvaluator;
+import java.util.Locale;
 
-public abstract class ServerConfiguration {
+public class ServerConfiguration extends AbstractServerConfiguration {
 
-	private Logger logger = Logger.getLogger(ServerConfiguration.class.getName());
+	public static final String DEFAULT_SYSTEM_LOCALE = "DEFAULT_SYSTEM_LOCALE";
 
-	protected Properties properties;
+	private final Locale defaultSystemLocale = Locale.US;
 
-	public ServerConfiguration() {
-		properties = new Properties();
-		loadConfiguration();
+	@Override
+	protected void loadConfiguration() {
+		configureAndSetDefaultSystemLocale();
+		loadConfigurationFromSystemProperties("systemConfigurationPropertiesFile");
 	}
 
-	public String getProperty(String key) {
-		String propertyValue = this.properties.getProperty(key);
-		if (propertyValue != null) {
-			propertyValue = propertyValue.trim();
-		}
-		return propertyValue;
+	private void configureAndSetDefaultSystemLocale() {
+		setProperty(DEFAULT_SYSTEM_LOCALE, defaultSystemLocale.toString());
+		SystemLocaleConfigurator.setSystemLocale(defaultSystemLocale);
 	}
 
-	public void setProperty(String key, String value) {
-		this.properties.setProperty(key, value);
-	}
-
-	public synchronized void loadProperties(String filePaths) {
-		if (!VariableEvaluator.isEmpty(filePaths)) {
-			for (String filePath : filePaths.split(",")) {
-				loadPropertiesFromFile(new File(filePath));
-			}
+	private void loadConfigurationFromSystemProperties(String configurationPropertiesFile) {
+		String configFile = System.getenv(configurationPropertiesFile);
+		if (!isEmpty(configFile)) {
+			loadProperties(configFile);
 		}
 	}
-
-	private void loadPropertiesFromFile(File configFile) {
-		try (FileInputStream input = new FileInputStream(configFile)) {
-			properties.load(input);
-		} catch (IOException ioException) {
-			logger.info(ioException.getMessage());
-		}
-	}
-
-	protected abstract void loadConfiguration();
-
 }
