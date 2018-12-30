@@ -1,4 +1,4 @@
-#MrShrimp telegram bot
+# MrShrimp telegram bot
 
 [![Build Status](https://travis-ci.org/AlekssGu/MrShrimp.svg?branch=master)](https://travis-ci.org/AlekssGu/MrShrimp)
 
