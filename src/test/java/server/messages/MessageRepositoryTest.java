@@ -1,46 +1,60 @@
 package server.messages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
-import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(MessageRepository.class)
 public class MessageRepositoryTest {
 
-	private static final String EXISTING_BUNDLE_NAME = "i18n.common.interface";
-	private static final String EXISTING_MESSAGE_KEY = "UNKNOWN_COMMAND";
-	private static final String EXISTING_MESSAGE_TEXT = "Unknown command requested - {0}";
+	private static final String BUNDLE_NAME = "randomBundle";
+	private static final String MESSAGE_KEY = "randomKey";
+	private static final String MESSAGE_TEXT = "randomString";
+	private static final String MESSAGE_TEXT_WITH_PARAMETER = "randomString - {0}";
+	private static final String MESSAGE_PARAMETER_VALUE = "test";
+	private static final String MESSAGE_TEXT_WITH_PARAMETER_VALUE = "randomString - " + MESSAGE_PARAMETER_VALUE;
 
 	@Mock
 	private ResourceBundle resourceBundle;
 
+	@Before
+	public void beforeEachTestMethod() {
+		mockStatic(MessageRepository.class);
+		when(MessageRepository.getMessagesBundle(BUNDLE_NAME)).thenReturn(resourceBundle);
+	}
+
 	@Test
 	public void getMessagesBundle() {
-		ResourceBundle actualResourceBundle = MessageRepository.getMessagesBundle(EXISTING_BUNDLE_NAME);
-		assertThat(actualResourceBundle).isEqualTo(ResourceBundle.getBundle(EXISTING_BUNDLE_NAME));
+		ResourceBundle actualResourceBundle = MessageRepository.getMessagesBundle(BUNDLE_NAME);
+		assertThat(actualResourceBundle).isEqualTo(resourceBundle);
 	}
 
 	@Test
 	public void getMessage() {
-		String translatedMessage = MessageRepository.getMessage(EXISTING_BUNDLE_NAME, EXISTING_MESSAGE_KEY);
-		String expectedString = ResourceBundle.getBundle(EXISTING_BUNDLE_NAME).getString(EXISTING_MESSAGE_KEY);
+		when(MessageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY)).thenReturn(MESSAGE_TEXT);
 
-		assertThat(translatedMessage).isEqualTo(expectedString);
+		String translatedMessage = MessageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY);
+		assertThat(translatedMessage).isEqualTo(MESSAGE_TEXT);
 	}
 
 	@Test
 	public void getMessageWithParameters() {
-		String messageParameter = "test";
-		String translatedMessage = MessageRepository.getMessageWithParameters(EXISTING_BUNDLE_NAME, EXISTING_MESSAGE_KEY, messageParameter);
-		String expectedString = MessageFormat.format(ResourceBundle.getBundle(EXISTING_BUNDLE_NAME).getString(EXISTING_MESSAGE_KEY),
-				messageParameter);
+		when(MessageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY)).thenReturn(MESSAGE_TEXT_WITH_PARAMETER);
+		when(MessageRepository.getMessageWithParameters(BUNDLE_NAME, MESSAGE_KEY, MESSAGE_PARAMETER_VALUE)).thenReturn(MESSAGE_TEXT_WITH_PARAMETER_VALUE);
 
-		assertThat(translatedMessage).isEqualTo(expectedString);
+		String translatedMessage = MessageRepository.getMessageWithParameters(BUNDLE_NAME, MESSAGE_KEY, MESSAGE_PARAMETER_VALUE);
+
+		assertThat(translatedMessage).isEqualTo(MESSAGE_TEXT_WITH_PARAMETER_VALUE);
 	}
+
 }

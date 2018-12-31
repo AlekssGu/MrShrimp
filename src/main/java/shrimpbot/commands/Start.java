@@ -12,7 +12,8 @@ import shrimpbot.ShrimpBot;
 
 public class Start implements BotCommand {
 
-	private static final String BUNDLE_NAME = "i18n.common.start";
+	static final String BUNDLE_NAME = "i18n.common.start";
+	static final String WELCOME_MESSAGE_KEY = "HELLO_TXT";
 
 	private final Provider<ShrimpBot> shrimpBotProvider;
 
@@ -35,6 +36,6 @@ public class Start implements BotCommand {
 	}
 
 	private String getWelcomeText(Message receivedMessage) {
-		return getMessageWithParameters(BUNDLE_NAME, "HELLO_TXT", receivedMessage.getFrom().getUserName());
+		return getMessageWithParameters(BUNDLE_NAME, WELCOME_MESSAGE_KEY, receivedMessage.getFrom().getUserName());
 	}
 }
