@@ -125,11 +125,11 @@ public class ShrimpBotTest {
 		assertThat(actualMessageSent.getText()).isEqualTo(messageForSending.getText());
 	}
 
-	@Test(expected = TelegramApiException.class)
+	@Test
 	public void sendMessageThrowsTelegramError() throws TelegramApiException {
 		SendMessage messageForSending = Mockito.mock(SendMessage.class);
-		when(shrimpBot.execute(messageForSending)).thenThrow(new TelegramApiException());
 		doCallRealMethod().when(shrimpBot).sendMessage(messageForSending);
+		doThrow(new TelegramApiException()).when(shrimpBot).execute(messageForSending);
 
 		shrimpBot.sendMessage(messageForSending);
 	}
