@@ -117,6 +117,7 @@ public class ShrimpBotTest {
 		when(actualMessageSent.getText()).thenReturn(MESSAGE_TEXT);
 		when(actualMessageSent.getChatId()).thenReturn(CHAT_ID);
 		when(shrimpBot.execute(messageForSending)).thenReturn(actualMessageSent);
+		doCallRealMethod().when(shrimpBot).sendMessage(messageForSending);
 
 		shrimpBot.sendMessage(messageForSending);
 
@@ -128,17 +129,18 @@ public class ShrimpBotTest {
 	public void sendMessageThrowsTelegramError() throws TelegramApiException {
 		SendMessage messageForSending = Mockito.mock(SendMessage.class);
 		when(shrimpBot.execute(messageForSending)).thenThrow(new TelegramApiException());
+		doCallRealMethod().when(shrimpBot).sendMessage(messageForSending);
 
 		shrimpBot.sendMessage(messageForSending);
 	}
 
 	@Test
-	public void sendPhoto() throws IOException, TelegramApiException {
+	public void sendPhoto() throws IOException {
 		SendPhoto messageForSending = createPhotoMessageForSending();
 		Message actualMessageSent = Mockito.mock(Message.class);
 
-		doNothing().when(shrimpBot).sendPhoto(messageForSending);
 		when(actualMessageSent.getChatId()).thenReturn(CHAT_ID);
+		doCallRealMethod().when(shrimpBot).sendPhoto(messageForSending);
 
 		shrimpBot.sendPhoto(messageForSending);
 
@@ -149,6 +151,7 @@ public class ShrimpBotTest {
 	public void sendPhotoThrowsTelegramError() throws TelegramApiException, IOException {
 		SendPhoto messageForSending = createPhotoMessageForSending();
 		when(shrimpBot.execute(messageForSending)).thenThrow(new TelegramApiException());
+		doCallRealMethod().when(shrimpBot).sendPhoto(messageForSending);
 
 		shrimpBot.sendPhoto(messageForSending);
 	}
