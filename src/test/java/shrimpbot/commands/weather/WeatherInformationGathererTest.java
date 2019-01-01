@@ -3,6 +3,7 @@ package shrimpbot.commands.weather;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static shrimpbot.commands.weather.WeatherInformationGatherer.WEATHER_IMAGE_FILENAME;
 
 import java.io.File;
 
@@ -40,6 +41,9 @@ public class WeatherInformationGathererTest {
 	WebElement popupWebElement;
 
 	@Mock
+	File imageForSending;
+
+	@Mock
 	File screenShot;
 
 	@InjectMocks
@@ -48,6 +52,7 @@ public class WeatherInformationGathererTest {
 	@Test
 	public void getMeteoprogScreenshot() throws Exception {
 		PowerMockito.whenNew(FirefoxDriver.class).withNoArguments().thenReturn(firefoxDriver);
+		PowerMockito.whenNew(File.class).withArguments(WEATHER_IMAGE_FILENAME).thenReturn(imageForSending);
 		PowerMockito.mockStatic(FileUtils.class);
 
 		when(firefoxDriver.manage()).thenReturn(webDriverOptions);
@@ -55,11 +60,11 @@ public class WeatherInformationGathererTest {
 		when(webDriverOptions.window()).thenReturn(webDriverWindow);
 		when(firefoxDriver.findElement(By.className(WeatherInformationGatherer.POPUP_BUTTON_CLASS_NAME))).thenReturn(popupWebElement);
 		when(firefoxDriver.getScreenshotAs(OutputType.FILE)).thenReturn(screenShot);
+		when(imageForSending.getAbsoluteFile()).thenReturn(imageForSending);
 
 		File meteoprogScreenshot = weatherInformationGatherer.getMeteoprogScreenshot();
 
-		assertThat(meteoprogScreenshot).isFile();
-		assertThat(meteoprogScreenshot).exists();
+		assertThat(meteoprogScreenshot).isEqualTo(imageForSending);
 
 		verify(firefoxDriver).getScreenshotAs(OutputType.FILE);
 		PowerMockito.verifyStatic(FileUtils.class);

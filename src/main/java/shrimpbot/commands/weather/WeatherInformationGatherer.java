@@ -12,9 +12,10 @@ public class WeatherInformationGatherer {
 
 	static final String METEOPROG_WEBSITE_URL = "http://www.meteoprog.lv/lv/";
 	static final String POPUP_BUTTON_CLASS_NAME = "gdpr-dialog__btn";
+	static final String WEATHER_IMAGE_FILENAME = "weather.png";
 
 	File getMeteoprogScreenshot() {
-		final File screenShot = new File("weather.png").getAbsoluteFile();
+		final File screenShot = new File(WEATHER_IMAGE_FILENAME).getAbsoluteFile();
 
 		prepareScreenAndGetScreenShot(screenShot);
 
