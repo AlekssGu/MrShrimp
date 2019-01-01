@@ -8,9 +8,10 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class MotivationQuoteGatherer {
 
+	static final String GENERATED_IMAGE_CLASS_NAME = "generated-image";
+	static final String BTN_GENERATE_CLASS_NAME = "btn-generate";
+
 	private static final String INSPIROBOT_WEBSITE_URL = "https://inspirobot.me";
-	private static final String GENERATED_IMAGE_CLASS_NAME = "generated-image";
-	private static final String BTN_GENERATE_CLASS_NAME = "btn-generate";
 	private static final int WINDOW_WIDTH = 1024;
 	private static final int WINDOW_HEIGHT = 728;
 
