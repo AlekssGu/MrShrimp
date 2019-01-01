@@ -15,12 +15,12 @@ import shrimpbot.commands.BotCommandGateway;
 
 public class ShrimpBot extends TelegramLongPollingBot {
 
-	private final ShrimpBotConfiguration serverConfiguration;
+	private final ShrimpBotConfiguration shrimpBotConfiguration;
 	private final BotCommandGateway botCommandGateway;
 
 	@Inject
 	ShrimpBot(ShrimpBotConfiguration shrimpBotConfiguration, BotCommandGateway botCommandGateway) {
-		this.serverConfiguration = shrimpBotConfiguration;
+		this.shrimpBotConfiguration = shrimpBotConfiguration;
 		this.botCommandGateway = botCommandGateway;
 	}
 
@@ -34,11 +34,11 @@ public class ShrimpBot extends TelegramLongPollingBot {
 	}
 
 	public String getBotUsername() {
-		return serverConfiguration.getProperty(ShrimpBotConfiguration.SHRIMP_BOT_TELEGRAM_NAME);
+		return shrimpBotConfiguration.getProperty(ShrimpBotConfiguration.SHRIMP_BOT_TELEGRAM_NAME);
 	}
 
 	public String getBotToken() {
-		return serverConfiguration.getProperty(ShrimpBotConfiguration.SHRIMP_BOT_TELEGRAM_TOKEN);
+		return shrimpBotConfiguration.getProperty(ShrimpBotConfiguration.SHRIMP_BOT_TELEGRAM_TOKEN);
 	}
 
 	public void sendMessage(SendMessage message) {
