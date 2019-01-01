@@ -16,7 +16,8 @@ import shrimpbot.commands.BotCommand;
 
 public class Weather implements BotCommand {
 
-	private static final String BUNDLE_NAME = "i18n.common.interface";
+	static final String BUNDLE_NAME = "i18n.common.interface";
+	static final String WEATHER_MESSAGE_KEY = "WEATHER_INFORMATION_COMING_UP";
 
 	private final Provider<ShrimpBot> shrimpBotProvider;
 	private final WeatherInformationGatherer weatherInformationGatherer;
@@ -38,7 +39,7 @@ public class Weather implements BotCommand {
 	private SendMessage prepareDefaultCommandMessage(long chatId) {
 		return new SendMessage()
 				.setChatId(chatId)
-				.setText(getMessage(BUNDLE_NAME, "WEATHER_INFORMATION_COMING_UP"));
+				.setText(getMessage(BUNDLE_NAME, WEATHER_MESSAGE_KEY));
 	}
 
 	private SendPhoto prepareScreenshotMessage(long chatId) {

@@ -1,12 +1,15 @@
 package shrimpbot.commands;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static server.messages.MessageRepository.getMessageWithParameters;
+import static shrimpbot.commands.Start.BUNDLE_NAME;
+import static shrimpbot.commands.Start.WELCOME_MESSAGE_KEY;
 
 import javax.inject.Provider;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -46,19 +49,18 @@ public class StartTest {
 	@Test
 	public void process() {
 		mockStatic(MessageRepository.class);
-		Message updateMessage = Mockito.mock(Message.class);
+		Message receivedMessage = Mockito.mock(Message.class);
 
-		when(updateMessage.getFrom()).thenReturn(user);
+		when(receivedMessage.getFrom()).thenReturn(user);
 		when(user.getUserName()).thenReturn(USERNAME);
 		when(shrimpBotProvider.get()).thenReturn(shrimpBot);
-		PowerMockito.when(MessageRepository.getMessageWithParameters(Start.BUNDLE_NAME, Start.WELCOME_MESSAGE_KEY,
-				user.getUserName())).thenReturn(RANDOM_MESSAGE_WITH_USERNAME);
+		PowerMockito.when(getMessageWithParameters(BUNDLE_NAME, WELCOME_MESSAGE_KEY, user.getUserName())).thenReturn(RANDOM_MESSAGE_WITH_USERNAME);
 
 		ArgumentCaptor<SendMessage> sentMessageArgument = ArgumentCaptor.forClass(SendMessage.class);
 
-		start.process(updateMessage);
-		verify(shrimpBot).sendMessage(sentMessageArgument.capture());
+		start.process(receivedMessage);
 
-		Assertions.assertThat(sentMessageArgument.getValue().getText()).contains("alekssgu");
+		verify(shrimpBot).sendMessage(sentMessageArgument.capture());
+		assertThat(sentMessageArgument.getValue().getText()).contains("alekssgu");
 	}
 }

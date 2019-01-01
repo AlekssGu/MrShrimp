@@ -10,8 +10,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class WeatherInformationGatherer {
 
-	private static final String METEOPROG_WEBSITE_URL = "http://www.meteoprog.lv/lv/";
-	private static final String POPUP_BUTTON_CLASS_NAME = "gdpr-dialog__btn";
+	static final String METEOPROG_WEBSITE_URL = "http://www.meteoprog.lv/lv/";
+	static final String POPUP_BUTTON_CLASS_NAME = "gdpr-dialog__btn";
 
 	File getMeteoprogScreenshot() {
 		final File screenShot = new File("weather.png").getAbsoluteFile();
