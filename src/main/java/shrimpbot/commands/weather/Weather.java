@@ -1,7 +1,5 @@
 package shrimpbot.commands.weather;
 
-import static server.messages.MessageRepository.getMessage;
-
 import java.io.File;
 
 import javax.inject.Inject;
@@ -11,6 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import server.messages.MessageRepository;
 import shrimpbot.ShrimpBot;
 import shrimpbot.commands.BotCommand;
 
@@ -21,11 +20,13 @@ public class Weather implements BotCommand {
 
 	private final Provider<ShrimpBot> shrimpBotProvider;
 	private final WeatherInformationGatherer weatherInformationGatherer;
+	private final MessageRepository messageRepository;
 
 	@Inject
-	Weather(Provider<ShrimpBot> shrimpBotProvider, WeatherInformationGatherer weatherInformationGatherer) {
+	Weather(Provider<ShrimpBot> shrimpBotProvider, WeatherInformationGatherer weatherInformationGatherer, MessageRepository messageRepository) {
 		this.shrimpBotProvider = shrimpBotProvider;
 		this.weatherInformationGatherer = weatherInformationGatherer;
+		this.messageRepository = messageRepository;
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class Weather implements BotCommand {
 	private SendMessage prepareDefaultCommandMessage(long chatId) {
 		return new SendMessage()
 				.setChatId(chatId)
-				.setText(getMessage(BUNDLE_NAME, WEATHER_MESSAGE_KEY));
+				.setText(messageRepository.getMessage(BUNDLE_NAME, WEATHER_MESSAGE_KEY));
 	}
 
 	private SendPhoto prepareScreenshotMessage(long chatId) {

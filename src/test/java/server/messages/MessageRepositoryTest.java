@@ -1,15 +1,18 @@
 package server.messages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -27,34 +30,43 @@ public class MessageRepositoryTest {
 	@Mock
 	private ResourceBundle resourceBundle;
 
-	@Before
-	public void beforeEachTestMethod() {
-		mockStatic(MessageRepository.class);
-		when(MessageRepository.getMessagesBundle(BUNDLE_NAME)).thenReturn(resourceBundle);
-	}
+	@Mock
+	private ResourceBundleSupplier resourceBundleSupplier;
+
+	@InjectMocks
+	private MessageRepository messageRepository;
 
 	@Test
 	public void getMessagesBundle() {
-		ResourceBundle actualResourceBundle = MessageRepository.getMessagesBundle(BUNDLE_NAME);
+		mockStatic(ResourceBundle.class);
+		PowerMockito.when(ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault())).thenReturn(resourceBundle);
+		when(resourceBundleSupplier.getBundle(any(), any(Locale.class))).thenReturn(resourceBundle);
+
+		ResourceBundle actualResourceBundle = messageRepository.getMessagesBundle(BUNDLE_NAME);
 		assertThat(actualResourceBundle).isEqualTo(resourceBundle);
 	}
 
 	@Test
 	public void getMessage() {
-		when(MessageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY)).thenReturn(MESSAGE_TEXT);
+		mockStatic(ResourceBundle.class);
+		PowerMockito.when(ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault())).thenReturn(resourceBundle);
+		when(resourceBundleSupplier.getBundle(any(), any(Locale.class))).thenReturn(resourceBundle);
+		when(messageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY)).thenReturn(MESSAGE_TEXT);
 
-		String translatedMessage = MessageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY);
+		String translatedMessage = messageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY);
 		assertThat(translatedMessage).isEqualTo(MESSAGE_TEXT);
 	}
 
 	@Test
 	public void getMessageWithParameters() {
-		when(MessageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY)).thenReturn(MESSAGE_TEXT_WITH_PARAMETER);
-		when(MessageRepository.getMessageWithParameters(BUNDLE_NAME, MESSAGE_KEY, MESSAGE_PARAMETER_VALUE)).thenReturn(MESSAGE_TEXT_WITH_PARAMETER_VALUE);
+		mockStatic(ResourceBundle.class);
+		PowerMockito.when(ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault())).thenReturn(resourceBundle);
+		when(resourceBundleSupplier.getBundle(any(), any(Locale.class))).thenReturn(resourceBundle);
+		when(messageRepository.getMessage(BUNDLE_NAME, MESSAGE_KEY)).thenReturn(MESSAGE_TEXT_WITH_PARAMETER);
+		when(messageRepository.getMessageWithParameters(BUNDLE_NAME, MESSAGE_KEY, MESSAGE_PARAMETER_VALUE)).thenReturn(MESSAGE_TEXT_WITH_PARAMETER_VALUE);
 
-		String translatedMessage = MessageRepository.getMessageWithParameters(BUNDLE_NAME, MESSAGE_KEY, MESSAGE_PARAMETER_VALUE);
+		String translatedMessage = messageRepository.getMessageWithParameters(BUNDLE_NAME, MESSAGE_KEY, MESSAGE_PARAMETER_VALUE);
 
 		assertThat(translatedMessage).isEqualTo(MESSAGE_TEXT_WITH_PARAMETER_VALUE);
 	}
-
 }

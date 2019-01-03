@@ -1,13 +1,12 @@
 package shrimpbot.commands;
 
-import static server.messages.MessageRepository.getMessageWithParameters;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import server.messages.MessageRepository;
 import shrimpbot.ShrimpBot;
 
 public class Start implements BotCommand {
@@ -16,10 +15,12 @@ public class Start implements BotCommand {
 	static final String WELCOME_MESSAGE_KEY = "HELLO_TXT";
 
 	private final Provider<ShrimpBot> shrimpBotProvider;
+	private final MessageRepository messageRepository;
 
 	@Inject
-	Start(Provider<ShrimpBot> shrimpBotProvider) {
+	Start(Provider<ShrimpBot> shrimpBotProvider, MessageRepository messageRepository) {
 		this.shrimpBotProvider = shrimpBotProvider;
+		this.messageRepository = messageRepository;
 	}
 
 	@Override
@@ -36,6 +37,6 @@ public class Start implements BotCommand {
 	}
 
 	private String getWelcomeText(Message receivedMessage) {
-		return getMessageWithParameters(BUNDLE_NAME, WELCOME_MESSAGE_KEY, receivedMessage.getFrom().getUserName());
+		return messageRepository.getMessageWithParameters(BUNDLE_NAME, WELCOME_MESSAGE_KEY, receivedMessage.getFrom().getUserName());
 	}
 }

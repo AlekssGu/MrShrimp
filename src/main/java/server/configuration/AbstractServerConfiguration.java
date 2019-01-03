@@ -28,7 +28,9 @@ public abstract class AbstractServerConfiguration {
 	}
 
 	public void setProperty(String key, String value) {
-		this.properties.setProperty(key, value);
+		if(key != null && value != null) {
+			this.properties.setProperty(key, value);
+		}
 	}
 
 	public synchronized void loadProperties(String filePaths) {
